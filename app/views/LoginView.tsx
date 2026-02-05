@@ -1,89 +1,56 @@
 "use client";
 
-import { authClient } from "@/lib/auth-client";
-
 import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { cn } from "@/lib/utils";
-import { slugifyCompanyName } from "@/lib/slugify";
 
-import { RegisterInput, registerSchema } from "@/schemas/schemas";
+import { LoginInput, loginSchema } from "@/schemas/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import { useState } from "react";
 
-import { useForm, useWatch } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import { authClient } from "@/lib/auth-client";
 
-
-const SignupView = () => {
+const LoginView = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const router = useRouter()
+  const router = useRouter();
 
-  const form = useForm<RegisterInput>({
-    resolver: zodResolver(registerSchema),
+  const form = useForm<LoginInput>({
+    resolver: zodResolver(loginSchema),
     defaultValues: {
-      companyName: "",
       email: "",
       password: "",
     },
   });
 
-  const companyName = useWatch({ control: form.control, name: "companyName" });
-  const companySlug = companyName ? slugifyCompanyName(companyName) : "";
-  const showPreview = companyName && !form.formState.errors.companyName;
-
-  const onSubmit = async (payload: RegisterInput) => {
+  const onSubmit = async (payload: LoginInput) => {
     setIsLoading(true);
     try {
-      const { data, error } = await authClient.signUp.email({
+      const { data, error } = await authClient.signIn.email({
         email: payload.email,
         password: payload.password,
-        name: payload.companyName,
       });
+
       if (error) {
         toast.error(error.message ?? "Something went wrong. Please try again.");
         return;
       }
+
       if (data) {
-        try {
-          const response = await fetch(
-            `${process.env.NEXT_PUBLIC_API_URL}/api/companies`,
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                name: payload.companyName,
-                slug: companySlug,
-                owner_user_id: data.user.id,
-              }),
-            }
-          );
-
-          if (!response.ok) {
-            toast.error("Something went wrong. Please try again.");
-            return;
-          }
-
-          toast.success("Account created.");
-          router.push("/dashboard")
-        } catch {
-          toast.error("Something went wrong. Please try again.");
-        }
+        toast.success("Logged in successfully!");
+        router.push("/dashboard");
       }
     } catch {
       toast.error("Something went wrong. Please try again.");
@@ -104,39 +71,15 @@ const SignupView = () => {
             <Link href="/" className="text-2xl font-bold">
               YourTimer.io
             </Link>
-            <Link href="/login" className="text-sm underline">
-              Log in
+            <Link href="/sign-up" className="text-sm underline">
+              Sign up
             </Link>
           </div>
 
           {/* Hero copy */}
           <div className="space-y-2">
-            <h1 className="text-4xl font-semibold">
-              Create account
-     
-            </h1>
+            <h1 className="text-4xl font-semibold">Welcome back</h1>
           </div>
-
-          {/* Company name */}
-          <FormField
-            control={form.control}
-            name="companyName"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Company name</FormLabel>
-                <FormControl>
-                  <Input {...field} />
-                </FormControl>
-                <FormDescription
-                  className={cn("hidden", showPreview && "block")}
-                >
-                  Your public timer will be available at:
-                  <strong className="ml-1">{companySlug}.yourtimer.io</strong>
-                </FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
 
           {/* Email */}
           <FormField
@@ -218,7 +161,7 @@ const SignupView = () => {
             size="lg"
             className="bg-orange-600 text-white hover:bg-orange-600/80 cursor-pointer"
           >
-            {isLoading ? "Creating account..." : "Create account"}
+            {isLoading ? "logging in..." : "Login"}
           </Button>
         </form>
       </Form>
@@ -226,4 +169,4 @@ const SignupView = () => {
   );
 };
 
-export default SignupView;
+export default LoginView;
