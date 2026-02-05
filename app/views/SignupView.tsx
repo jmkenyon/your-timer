@@ -26,12 +26,12 @@ import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 
 
+
 const SignupView = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   const router = useRouter()
-
   const form = useForm<RegisterInput>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
@@ -53,6 +53,7 @@ const SignupView = () => {
         password: payload.password,
         name: payload.companyName,
       });
+
       if (error) {
         toast.error(error.message ?? "Something went wrong. Please try again.");
         return;
@@ -84,6 +85,7 @@ const SignupView = () => {
         } catch {
           toast.error("Something went wrong. Please try again.");
         }
+
       }
     } catch {
       toast.error("Something went wrong. Please try again.");
@@ -93,11 +95,13 @@ const SignupView = () => {
   };
 
   return (
+
     <main className="min-h-[calc(100vh-64px)] flex items-center justify-center bg-neutral-50 ">
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
           className="flex flex-col p-6 lg:p-16 space-y-6 min-w-2xl"
+
         >
           {/* Header */}
           <div className="flex items-center justify-between">
@@ -113,11 +117,13 @@ const SignupView = () => {
           <div className="space-y-2">
             <h1 className="text-4xl font-semibold">
               Create account
+
      
             </h1>
           </div>
 
           {/* Company name */}
+
           <FormField
             control={form.control}
             name="companyName"
