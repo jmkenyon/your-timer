@@ -1,5 +1,6 @@
 
 import { auth } from "@/lib/auth";
+
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
@@ -9,9 +10,12 @@ const page = async () => {
     headers: await headers()
   });
 
+
+
   if (!session) {
     redirect("/login");
   }
+
 };
 
 export default page;

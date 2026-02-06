@@ -18,5 +18,7 @@ export const registerSchema = z.object({
     .max(63, "Company name can't have more than 63 characters"),
 });
 
+
 export type RegisterInput = z.infer<typeof registerSchema>;
 export type LoginInput = z.infer<typeof loginSchema>;
+
