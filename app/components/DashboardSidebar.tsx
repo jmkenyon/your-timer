@@ -72,7 +72,7 @@ export const DashboardSidebar = () => {
                 <SidebarMenuItem key={item.url}>
                   <SidebarMenuButton
                     asChild
-                    className={cn(
+                    className={cn( "hover:bg-orange-100",
                       isActive(item.url) &&
                         "bg-linear-to-b from-sidebar-primary text-sidebar-primary-foreground! to-orange-600! hover:to-orange-600/90! "
                     )}

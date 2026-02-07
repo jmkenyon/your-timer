@@ -9,7 +9,6 @@ const page = async () => {
   });
 
   if (!session) {
-
     redirect("/login");
   }
 
