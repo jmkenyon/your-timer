@@ -1,3 +1,4 @@
+import TimerSettingsView from "@/app/views/TimerSettingsView";
 import { auth } from "@/lib/auth";
 
 import { headers } from "next/headers";
@@ -12,7 +13,11 @@ const page = async () => {
     redirect("/login");
   }
 
-  return <div>page</div>;
+
+
+  return (
+  <TimerSettingsView ownerUserId={session.user.id} />
+  );
 };
 
 export default page;

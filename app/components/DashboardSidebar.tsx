@@ -72,9 +72,9 @@ export const DashboardSidebar = () => {
                 <SidebarMenuItem key={item.url}>
                   <SidebarMenuButton
                     asChild
-                    className={cn( "hover:bg-orange-100",
+                    className={cn( "hover:bg-neutral-100 hover:text-black!",
                       isActive(item.url) &&
-                        "bg-linear-to-b from-sidebar-primary text-sidebar-primary-foreground! to-orange-600! hover:to-orange-600/90! "
+                        "bg-linear-to-b from-black text-sidebar-primary-foreground! to-black! hover:text-white!"
                     )}
                     tooltip={item.title}
                     isActive={isActive(item.url)}

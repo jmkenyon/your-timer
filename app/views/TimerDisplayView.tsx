@@ -1,6 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/utils";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
@@ -26,12 +27,27 @@ const TimerDisplayView = ({
   const [timer, setTimer] = useState<Timer | null>(null);
   const [timeRemaining, setTimeRemaining] = useState<number>(0);
 
+  const computeSecondsLeft = (target: string) => {
+    const now = new Date();
+    const targetDate = new Date(target);
+    return Math.max(
+      0,
+      Math.floor((targetDate.getTime() - now.getTime()) / 1000)
+    );
+  };
+
   useEffect(() => {
     const fetchTimer = async () => {
       try {
         const companyResponse = await fetch(
           `${process.env.NEXT_PUBLIC_API_URL}/api/companies/by_ownerid/${ownerUserId}`
         );
+
+        if (!companyResponse.ok) {
+          toast.error("Failed to fetch company data.");
+          return;
+        }
+
         const companyData = await companyResponse.json();
 
         if (companyData.length === 0) {
@@ -44,12 +60,19 @@ const TimerDisplayView = ({
         const timerResponse = await fetch(
           `${process.env.NEXT_PUBLIC_API_URL}/api/timers/${companyId}`
         );
+
+        if (!timerResponse.ok) {
+          toast.error("Failed to fetch timer data.");
+          return;
+        }
         const timerData = await timerResponse.json();
         if (timerData.length === 0) {
           toast.error("No timer found for the company.");
           return;
         }
-        setTimer(timerData[0]);
+        const t = timerData[0];
+        setTimer(t);
+        setTimeRemaining(computeSecondsLeft(t.target_datetime));
       } catch {
         toast.error("Failed to fetch timer data.");
       }
@@ -61,28 +84,16 @@ const TimerDisplayView = ({
     if (!timer) return;
 
     const interval = setInterval(() => {
-      const now = new Date();
-      const target = new Date(timer.target_datetime);
-      const secondsLeft = Math.max(
-        0,
-        Math.floor((target.getTime() - now.getTime()) / 1000)
-      );
-
-      setTimeRemaining(secondsLeft);
+      setTimeRemaining(computeSecondsLeft(timer.target_datetime));
     }, 1000);
 
     return () => clearInterval(interval);
   }, [timer]);
 
-  const formatTime = (seconds: number) => {
-    const hrs = Math.floor(seconds / 3600);
-    const mins = Math.floor((seconds % 3600) / 60);
-    const secs = Math.floor(seconds % 60);
-
-    return `${hrs.toString().padStart(2, "0")}:${mins
-      .toString()
-      .padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
-  };
+  const days = Math.floor(timeRemaining / 86400);
+  const hrs = Math.floor((timeRemaining % 86400) / 3600);
+  const mins = Math.floor((timeRemaining % 3600) / 60);
+  const secs = Math.floor(timeRemaining % 60);
 
   return (
     <div
@@ -91,9 +102,86 @@ const TimerDisplayView = ({
         className
       )}
     >
-      <p className="absolute top-5 left-5 text-white">YourTimer.io</p>
+      <Link
+        href={process.env.NEXT_PUBLIC_URL || "https://yourtimer.io"}
+        className="absolute top-5 left-5 text-white"
+      >
+        YourTimer.io
+      </Link>
       <h1 className="text-3xl pb-20">{timer?.name}</h1>
-      <p className="text-9xl"> {formatTime(timeRemaining)}</p>
+      <div className="flex gap-8 items-center">
+        {/* Days */}
+        {days > 0 && (
+          <div className="flex flex-col items-center">
+            <span
+              className={cn(
+                "text-[180px] font-mono font-bold transition-colors duration-300",
+                timeRemaining === 0 && "text-red-500 animate-pulse",
+                timeRemaining < 3600 && timeRemaining > 0 && "text-orange-600"
+              )}
+            >
+              {days.toString().padStart(2, "0")}
+            </span>
+            <span className="text-sm uppercase tracking-widest text-gray-400">
+              Days
+            </span>
+          </div>
+        )}
+
+        {/* Hours */}
+        <div className="flex flex-col items-center">
+          <span
+            className={cn(
+              "text-[180px] font-mono font-bold transition-colors duration-300",
+              timeRemaining === 0 && "text-red-600 animate-pulse",
+              timeRemaining < 3600 && timeRemaining > 0 && "text-orange-600"
+            )}
+          >
+            {hrs.toString().padStart(2, "0")}
+          </span>
+          <span className="text-sm uppercase tracking-widest text-gray-400">
+            Hours
+          </span>
+        </div>
+
+        {/* Separator */}
+        <span className="text-[180px] font-mono font-bold">:</span>
+
+        {/* Minutes */}
+        <div className="flex flex-col items-center">
+          <span
+            className={cn(
+              "text-[180px] font-mono font-bold transition-colors duration-300",
+              timeRemaining === 0 && "text-red-600 animate-pulse",
+              timeRemaining < 3600 && timeRemaining > 0 && "text-orange-600"
+            )}
+          >
+            {mins.toString().padStart(2, "0")}
+          </span>
+          <span className="text-sm uppercase tracking-widest text-gray-400">
+            Minutes
+          </span>
+        </div>
+
+        {/* Separator */}
+        <span className="text-[180px] font-mono font-bold">:</span>
+
+        {/* Seconds */}
+        <div className="flex flex-col items-center">
+          <span
+            className={cn(
+              "text-[180px] font-mono font-bold transition-colors duration-300",
+              timeRemaining === 0 && "text-red-600 animate-pulse",
+              timeRemaining < 3600 && timeRemaining > 0 && "text-orange-600"
+            )}
+          >
+            {secs.toString().padStart(2, "0")}
+          </span>
+          <span className="text-sm uppercase tracking-widest text-gray-400">
+            Seconds
+          </span>
+        </div>
+      </div>
     </div>
   );
 };
