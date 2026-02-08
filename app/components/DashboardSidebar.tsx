@@ -1,6 +1,6 @@
 "use client";
 
-import { Hourglass, LogOut, Settings } from "lucide-react";
+import { Hourglass, LogOut, Settings, CreditCard } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 
@@ -32,6 +32,14 @@ const TimerItems = [
     icon: Settings,
   },
 ];
+
+// const accountItems = [
+//   {
+//     title: "Billing",
+//     url: "/dashboard/billing",
+//     icon: CreditCard,
+//   },
+// ];
 
 export const DashboardSidebar = () => {
   const { data: session } = authClient.useSession();
@@ -72,7 +80,8 @@ export const DashboardSidebar = () => {
                 <SidebarMenuItem key={item.url}>
                   <SidebarMenuButton
                     asChild
-                    className={cn( "hover:bg-neutral-100 hover:text-black!",
+                    className={cn(
+                      "hover:bg-neutral-100 hover:text-black!",
                       isActive(item.url) &&
                         "bg-linear-to-b from-black text-sidebar-primary-foreground! to-black! hover:text-white!"
                     )}
@@ -89,7 +98,35 @@ export const DashboardSidebar = () => {
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
-      </SidebarContent>
+
+        {/* Billing */}
+        {/* <SidebarGroup>
+          <SidebarGroupLabel>Account</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {accountItems.map((item) => (
+                <SidebarMenuItem key={item.url}>
+                  <SidebarMenuButton
+                    asChild
+                    className={cn(
+                      "hover:bg-neutral-100 hover:text-black!",
+                      isActive(item.url) &&
+                        "bg-linear-to-b from-black text-sidebar-primary-foreground! to-black! hover:text-white!"
+                    )}
+                    tooltip={item.title}
+                    isActive={isActive(item.url)}
+                  >
+                    <Link href={item.url}>
+                      <item.icon className="size-5" />
+                      <span>{item.title}</span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>*/}
+      </SidebarContent> 
 
       <SidebarFooter>
         <SidebarMenu>

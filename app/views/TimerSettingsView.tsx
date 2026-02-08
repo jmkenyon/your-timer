@@ -1,18 +1,14 @@
 "use client";
 
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
 import { useEffect, useState } from "react";
-import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
+
 import toast from "react-hot-toast";
-import { DatePickerTime } from "../components/DateTimePicker";
+import CreateTimerDialog from "../components/CreateTimerDialog";
 import { Button } from "@/components/ui/button";
+import { EditIcon, Trash2 } from "lucide-react";
+import EditTimerDialog from "../components/EditTimerDialog";
+import { Timer } from "../types/types";
+import DeleteTimerDialog from "../components/DeleteTimerDialog";
 
 interface TimerSettingsViewProps {
   ownerUserId: string;
@@ -20,55 +16,11 @@ interface TimerSettingsViewProps {
 
 const TimerSettingsView = ({ ownerUserId }: TimerSettingsViewProps) => {
   const [companyId, setCompanyId] = useState<string>("");
-  const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const form = useForm<FieldValues>({
-    defaultValues: {
-      name: "",
-      companyId: "",
-      targetDateTime: null,
-    },
-  });
-
-  const onSubmit: SubmitHandler<FieldValues> = async (data) => {
-    const { name, targetDateTime } = data;
-
-    if (!companyId) {
-      toast.error("Company ID is not available.");
-      return;
-    }
-    setIsLoading(true);
-    try {
-      const timerResponse = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/timers`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            name,
-            company_id: companyId,
-            target_datetime: targetDateTime,
-          }),
-        }
-      );
-
-      if (!timerResponse.ok) {
-        toast.error("Failed to create timer.");
-        return;
-      }
-
-      toast.success("Timer created successfully!");
-    } catch {
-      toast.error("Failed to create timer.");
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  const [timers, setTimers] = useState<Timer[]>([]);
 
   useEffect(() => {
-    const getCompanyInfo = async () => {
+    const getInfo = async () => {
       try {
         const companyResponse = await fetch(
           `${process.env.NEXT_PUBLIC_API_URL}/api/companies/by_ownerid/${ownerUserId}`
@@ -78,75 +30,109 @@ const TimerSettingsView = ({ ownerUserId }: TimerSettingsViewProps) => {
           return;
         }
         const companyData = await companyResponse.json();
+        if (companyData.length === 0) {
+          toast.error("No company found for the user.");
+          return;
+        }
         const companyId = companyData[0].id;
         setCompanyId(companyId);
+
+        const timerResponse = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/api/timers/${companyId}`
+        );
+        const timerData = await timerResponse.json();
+        if (timerData.length > 0) {
+          setTimers(timerData);
+        }
+
+        // Add this separate useEffect to see the updated state:
       } catch {
         toast.error("Failed to fetch company data.");
         return;
       }
     };
-    getCompanyInfo();
+    getInfo();
   }, [ownerUserId]);
 
+  const fetchTimers = async () => {
+    const timerResponse = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/api/timers/${companyId}`
+    );
+    if (!timerResponse.ok) {
+      toast.error("Failed to fetch timer data.");
+      return;
+    }
+    const timerData = await timerResponse.json();
+    setTimers(timerData);
+  };
+
+  const reversedTimers = [...timers].reverse();
+
   return (
-    <div className="flex min-h-screen w-full items-center justify-center ">
-      <div className="w-full max-w-md space-y-8 rounded-2xl  bg-white p-8  border shadow-2xl">
-        <div className="text-center space-y-1">
-          <h1 className="text-3xl font-semibold text-slate-900">
-            Create Timer
-          </h1>
-          <p className="text-sm text-slate-500">Set up your countdown</p>
-        </div>
+    <div className="w-full max-w-5xl flex flex-col xl:p-0 p-5 pt-10">
+      <CreateTimerDialog companyId={companyId} onTimerCreated={fetchTimers} />
+      <h2 className="mb-6 text-xl font-semibold text-slate-900 mt-10">
+        Your Timers
+      </h2>
 
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-sm font-medium text-slate-700">
-                    Timer Name
-                  </FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      placeholder="Product Launch"
-                      className="h-11 border-slate-300 focus:border-slate-900 focus:ring-slate-900"
-                    />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="targetDateTime"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-sm font-medium text-slate-700 ">
-                    Countdown End Time
-                  </FormLabel>
-                  <FormControl>
-                    <DatePickerTime
-                      value={field.value}
-                      onChange={field.onChange}
-                    />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
-
-            <Button
-              type="submit"
-              disabled={isLoading}
-              className="h-12 w-full bg-slate-900 text-white hover:bg-slate-800 transition cursor-pointer"
+      {reversedTimers.length === 0 ? (
+        <p className="text-sm text-slate-500">No timers created yet.</p>
+      ) : (
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {reversedTimers.map((timer) => (
+            <div
+              key={timer.id}
+              className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm transition hover:shadow-md"
             >
-              {isLoading ? "Creating timer..." : "Create Timer"}
-            </Button>
-          </form>
-        </Form>
-      </div>
+              <div className="space-y-3">
+                <h3 className="truncate text-lg font-medium text-slate-900">
+                  {timer.name}
+                </h3>
+
+                <div className="text-sm text-slate-500">
+                  Ends
+                  <br />
+                  {new Date(timer.target_datetime).toLocaleString()}
+                </div>
+
+                <div className="pt-2">
+                  <span className="inline-flex rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-700">
+                    {timer.status}
+                  </span>
+                </div>
+                <div className="flex flex-row justify-between">
+                  <EditTimerDialog
+                    timerId={timer.id.toString()}
+                    onTimerCreated={fetchTimers}
+                    companyId={companyId}
+                  >
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8 rounded-lg text-slate-600 hover:bg-slate-100 hover:text-slate-900 cursor-pointer"
+                    >
+                      <EditIcon className="h-4 w-4" />
+                    </Button>
+                  </EditTimerDialog>
+                  <DeleteTimerDialog
+                    timerId={timer.id.toString()}
+                    onTimerCreated={fetchTimers}
+                    companyId={companyId}
+                  >
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8 rounded-lg text-slate-600 hover:bg-slate-100 hover:text-slate-900 cursor-pointer"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </DeleteTimerDialog>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 };

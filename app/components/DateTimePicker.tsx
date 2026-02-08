@@ -1,17 +1,17 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import { Button } from "@/components/ui/button"
-import { Calendar } from "@/components/ui/calendar"
-import { Field, FieldGroup, FieldLabel } from "@/components/ui/field"
-import { Input } from "@/components/ui/input"
+import * as React from "react";
+import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
+import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover"
-import { format } from "date-fns"
-import { ChevronDownIcon } from "lucide-react"
+} from "@/components/ui/popover";
+import { format } from "date-fns";
+import { ChevronDownIcon } from "lucide-react";
 
 interface DatePickerTimeProps {
   value?: Date;
@@ -23,12 +23,26 @@ export function DatePickerTime({ value, onChange }: DatePickerTimeProps) {
   const [date, setDate] = React.useState<Date | undefined>(value);
   const [time, setTime] = React.useState<string>("10:30:00");
 
+  React.useEffect(() => {
+    if (!value) return;
+  
+    const dateObj = typeof value === "string" ? new Date(value) : value;
+  
+    setDate(dateObj);
+  
+    const hours = dateObj.getHours().toString().padStart(2, "0");
+    const minutes = dateObj.getMinutes().toString().padStart(2, "0");
+    const seconds = dateObj.getSeconds().toString().padStart(2, "0");
+  
+    setTime(`${hours}:${minutes}:${seconds}`);
+  }, [value]);
+
   const handleDateChange = (newDate: Date | undefined) => {
     setDate(newDate);
-    
+
     // Combine date + time into single Date object
     if (newDate && time) {
-      const [hours, minutes, seconds] = time.split(':');
+      const [hours, minutes, seconds] = time.split(":");
       const combined = new Date(newDate);
       combined.setHours(parseInt(hours), parseInt(minutes), parseInt(seconds));
       onChange?.(combined);
@@ -38,10 +52,10 @@ export function DatePickerTime({ value, onChange }: DatePickerTimeProps) {
   const handleTimeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newTime = e.target.value;
     setTime(newTime);
-    
+
     // Combine date + time
-    if (date) {
-      const [hours, minutes, seconds] = newTime.split(':');
+    if (date && newTime) {
+      const [hours, minutes, seconds] = newTime.split(":");
       const combined = new Date(date);
       combined.setHours(parseInt(hours), parseInt(minutes), parseInt(seconds));
       onChange?.(combined);

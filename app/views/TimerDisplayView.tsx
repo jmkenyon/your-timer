@@ -70,7 +70,10 @@ const TimerDisplayView = ({
           toast.error("No timer found for the company.");
           return;
         }
-        const t = timerData[0];
+
+        const timerLenght = timerData.length;
+      
+        const t = timerData[timerLenght -1 ];
         setTimer(t);
         setTimeRemaining(computeSecondsLeft(t.target_datetime));
       } catch {
@@ -95,6 +98,14 @@ const TimerDisplayView = ({
   const mins = Math.floor((timeRemaining % 3600) / 60);
   const secs = Math.floor(timeRemaining % 60);
 
+  if (!timer) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        Loading...
+      </div>
+    );
+  }
+
   return (
     <div
       className={cn(
@@ -112,18 +123,18 @@ const TimerDisplayView = ({
       <div className="flex gap-8 items-center">
         {/* Days */}
         {days > 0 && (
-          <div className="flex flex-col items-center">
+          <div className="flex flex-col items-center mr-10">
             <span
               className={cn(
                 "text-[180px] font-mono font-bold transition-colors duration-300",
-                timeRemaining === 0 && "text-red-500 animate-pulse",
+                timeRemaining === 0 && "text-red-600 animate-pulse",
                 timeRemaining < 3600 && timeRemaining > 0 && "text-orange-600"
               )}
             >
               {days.toString().padStart(2, "0")}
             </span>
             <span className="text-sm uppercase tracking-widest text-gray-400">
-              Days
+              {days === 1 ? "Day" : "Days"}
             </span>
           </div>
         )}
@@ -140,7 +151,7 @@ const TimerDisplayView = ({
             {hrs.toString().padStart(2, "0")}
           </span>
           <span className="text-sm uppercase tracking-widest text-gray-400">
-            Hours
+            {hrs === 1 ? "Hour" : "Hours"}
           </span>
         </div>
 
@@ -159,7 +170,7 @@ const TimerDisplayView = ({
             {mins.toString().padStart(2, "0")}
           </span>
           <span className="text-sm uppercase tracking-widest text-gray-400">
-            Minutes
+            {mins === 1 ? "Minute" : "Minutes"}
           </span>
         </div>
 
@@ -178,7 +189,7 @@ const TimerDisplayView = ({
             {secs.toString().padStart(2, "0")}
           </span>
           <span className="text-sm uppercase tracking-widest text-gray-400">
-            Seconds
+           {secs === 1 ? "Second" : "Seconds"}
           </span>
         </div>
       </div>
