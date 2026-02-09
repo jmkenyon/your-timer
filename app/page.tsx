@@ -25,9 +25,10 @@ export default function Home() {
 
             {/* Live Demo Timer */}
             <div className="py-8">
-              <TimerDisplayView 
-                ownerUserId="FBnJ1pC7t0kNR2LIjwIN1v1wKjRnWUqR" 
-                className="bg-neutral-900 text-white rounded-2xl p-8"
+              <TimerDisplayView
+                ownerUserId={process.env.NEXT_PUBLIC_OWNERID!}
+                compact={true}
+                className="bg-neutral-900 text-white rounded-2xl"
               />
             </div>
 
