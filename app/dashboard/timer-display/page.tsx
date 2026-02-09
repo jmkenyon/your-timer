@@ -13,11 +13,14 @@ const page = async () => {
     redirect("/login");
   }
 
-  const ownerUserId = session.user.id 
+  const ownerUserId = session.user.id;
 
   return (
-    <TimerDisplayView ownerUserId={ownerUserId}/>
-  )
+    <div>
+      <TimerDisplayView ownerUserId={ownerUserId} />
+   
+    </div>
+  );
 };
 
 export default page;

@@ -8,12 +8,37 @@ export const config = {
 };
 
 export async function proxy(request: NextRequest) {
-  const session = await auth.api.getSession({
-    headers: await headers(), // you need to pass the headers object.
-  });
-
+  const hostname = request.headers.get("host");
+  const rootDomain = process.env.NEXT_PUBLIC_ROOT_DOMAIN;
   const pathname = request.nextUrl.pathname;
-  if (pathname?.startsWith("/dashboard") && !session) {
-    return NextResponse.redirect(new URL("/login", request.url));
+
+
+  if (!hostname || !rootDomain) {
+    return NextResponse.next();
   }
+
+  const isTenantDomain = hostname.endsWith(`.${rootDomain}`);
+  const companySlug = isTenantDomain
+    ? hostname.replace(`.${rootDomain}`, "")
+    : null;
+
+ 
+  if (pathname?.startsWith("/dashboard")) {
+    const session = await auth.api.getSession({
+      headers: await headers(),
+    });
+    
+    if (!session) {
+      return NextResponse.redirect(new URL("/login", request.url));
+    }
+  }
+
+  
+
+  if (isTenantDomain && companySlug) {
+    return NextResponse.rewrite(
+      new URL(`/company/${companySlug}${pathname}`, request.url)
+    );
+  }
+  return NextResponse.next();
 }

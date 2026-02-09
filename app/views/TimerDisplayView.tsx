@@ -70,12 +70,11 @@ const TimerDisplayView = ({
           toast.error("No timer found for the company.");
           return;
         }
+        const activeTimer = timerData.filter((timer: Timer) => timer.status === "running")[0];
 
-        const timerLenght = timerData.length;
-      
-        const t = timerData[timerLenght -1 ];
-        setTimer(t);
-        setTimeRemaining(computeSecondsLeft(t.target_datetime));
+       
+        setTimer(activeTimer);
+        setTimeRemaining(computeSecondsLeft(activeTimer.target_datetime));
       } catch {
         toast.error("Failed to fetch timer data.");
       }
@@ -101,7 +100,7 @@ const TimerDisplayView = ({
   if (!timer) {
     return (
       <div className="flex min-h-screen items-center justify-center">
-        Loading...
+        No timer found. Please create a timer in the settings page.
       </div>
     );
   }

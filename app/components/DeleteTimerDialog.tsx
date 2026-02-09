@@ -1,17 +1,8 @@
 "use client";
 
-import {
-  Controller,
-  FieldValues,
-  SubmitHandler,
-  useForm,
-} from "react-hook-form";
-import { DatePickerTime } from "../components/DateTimePicker";
-
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
-  DialogClose,
   DialogContent,
   DialogDescription,
   DialogFooter,
@@ -19,12 +10,11 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Field, FieldGroup } from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { Timer } from "../types/types";
+import Loading from "@/loading";
 
 interface DeleteTimerDialogProps {
   timerId: string;
@@ -61,7 +51,6 @@ const DeleteTimerDialog = ({
           toast.error("Timer not found.");
           return;
         }
-
         setTimer(timerData);
       } catch {
         toast.error("Failed to fetch timer data.");
@@ -70,28 +59,7 @@ const DeleteTimerDialog = ({
     fetchTimer();
   }, [companyId, timerId]);
 
-  const { register, handleSubmit, control, reset } = useForm<FieldValues>({
-    defaultValues: {
-      name: "",
-      companyId: "",
-      targetDateTime: null,
-    },
-  });
-
-  useEffect(() => {
-    if (!timer) return;
-
-    reset({
-      name: timer.name,
-      targetDateTime: new Date(timer.target_datetime),
-    });
-  }, [timer, reset]);
-
-  const onSubmit: SubmitHandler<FieldValues> = async (data) => {
-    const { name, targetDateTime } = data;
-
-
-
+  const handleDelete = async (timerId: number) => {
     if (!companyId) {
       toast.error("Company ID is not available.");
       return;
@@ -102,43 +70,38 @@ const DeleteTimerDialog = ({
       return;
     }
 
-    if (!targetDateTime) {
-      toast.error("Please select a countdown end time.");
-      return;
-    }
-
     setIsLoading(true);
     try {
       const timerResponse = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}/api/timers/${timerId}`,
         {
-          method: "PUT",
+          method: "DELETE",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            name,
-            company_id: companyId,
-            target_datetime: targetDateTime,
+            id: timerId,
           }),
         }
       );
 
       if (!timerResponse.ok) {
-        const errorData = await timerResponse.json();
-        console.log("Error data:", errorData);
-        toast.error("Failed to update timer.");
+        toast.error("Failed to delete timer.");
         return;
       }
-      toast.success("Timer created successfully!");
+      toast.success("Timer deleted successfully!");
       onTimerCreated();
     } catch {
-      toast.error("Failed to create timer.");
+      toast.error("Failed to delete timer.");
     } finally {
       setIsLoading(false);
       setOpen(false);
     }
   };
+
+  if (!timer) {
+    return <Loading/>; 
+  }
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -161,7 +124,7 @@ const DeleteTimerDialog = ({
           </Button>
           <Button
             variant="destructive"
-            onClick={() => {}}
+            onClick={() => handleDelete(timer.id)}
             disabled={isLoading}
             className="bg-red-600 hover:bg-red-700 focus:ring-red-500 cursor-pointer"
           >

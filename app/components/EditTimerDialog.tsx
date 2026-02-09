@@ -130,10 +130,10 @@ const EditTimerDialog = ({
         toast.error("Failed to update timer.");
         return;
       }
-      toast.success("Timer created successfully!");
+      toast.success("Timer updated successfully!");
       onTimerCreated();
     } catch {
-      toast.error("Failed to create timer.");
+      toast.error("Failed to update timer.");
     } finally {
       setIsLoading(false);
       setOpen(false);

@@ -5,10 +5,18 @@ import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import CreateTimerDialog from "../components/CreateTimerDialog";
 import { Button } from "@/components/ui/button";
-import { EditIcon, Trash2 } from "lucide-react";
+import {
+  EditIcon,
+  PlayCircle,
+  StopCircle,
+  TimerOff,
+  Trash2,
+} from "lucide-react";
 import EditTimerDialog from "../components/EditTimerDialog";
 import { Timer } from "../types/types";
 import DeleteTimerDialog from "../components/DeleteTimerDialog";
+import { cn, generateTenantURL } from "@/lib/utils";
+import Link from "next/link";
 
 interface TimerSettingsViewProps {
   ownerUserId: string;
@@ -16,8 +24,36 @@ interface TimerSettingsViewProps {
 
 const TimerSettingsView = ({ ownerUserId }: TimerSettingsViewProps) => {
   const [companyId, setCompanyId] = useState<string>("");
+  const [companySlug, setCompanySlug] = useState<string>("");
 
   const [timers, setTimers] = useState<Timer[]>([]);
+
+  const handleStartStop = async (timerId: number, currentStatus: string) => {
+    const newStatus = currentStatus === "running" ? "stopped" : "running";
+
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/timers/${timerId}/${
+          newStatus === "running" ? "start" : "stop"
+        }`,
+        { method: "PATCH" }
+      );
+
+      if (!response.ok) {
+        toast.error(
+          `Failed to ${newStatus === "running" ? "start" : "stop"} timer`
+        );
+        return;
+      }
+
+      toast.success(
+        `Timer ${newStatus === "running" ? "started" : "stopped"}!`
+      );
+      fetchTimers(); // Refresh list
+    } catch {
+      toast.error("Something went wrong");
+    }
+  };
 
   useEffect(() => {
     const getInfo = async () => {
@@ -35,7 +71,9 @@ const TimerSettingsView = ({ ownerUserId }: TimerSettingsViewProps) => {
           return;
         }
         const companyId = companyData[0].id;
+        const companySlug = companyData[0].slug;
         setCompanyId(companyId);
+        setCompanySlug(companySlug);
 
         const timerResponse = await fetch(
           `${process.env.NEXT_PUBLIC_API_URL}/api/timers/${companyId}`
@@ -66,40 +104,58 @@ const TimerSettingsView = ({ ownerUserId }: TimerSettingsViewProps) => {
     setTimers(timerData);
   };
 
-  const reversedTimers = [...timers].reverse();
+  const sortedTimers = [...timers].sort(
+    (a, b) =>
+      new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+  );
 
   return (
     <div className="w-full max-w-5xl flex flex-col xl:p-0 p-5 pt-10">
-      <CreateTimerDialog companyId={companyId} onTimerCreated={fetchTimers} />
+      <div className="flex flex-row items-center justify-between">
+        <CreateTimerDialog companyId={companyId} onTimerCreated={fetchTimers} />
+        <Button asChild>
+        <Link href={generateTenantURL(companySlug)} target="_blank" rel="noopener noreferrer" >View Public Timer</Link>
+        </Button>
+      </div>
       <h2 className="mb-6 text-xl font-semibold text-slate-900 mt-10">
         Your Timers
       </h2>
 
-      {reversedTimers.length === 0 ? (
+      {sortedTimers.length === 0 ? (
         <p className="text-sm text-slate-500">No timers created yet.</p>
       ) : (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {reversedTimers.map((timer) => (
+          {sortedTimers.map((timer) => (
             <div
               key={timer.id}
-              className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm transition hover:shadow-md"
+              className={cn(
+                "rounded-xl border border-slate-200 bg-white p-5 shadow-sm transition hover:shadow-md"
+              )}
             >
               <div className="space-y-3">
-                <h3 className="truncate text-lg font-medium text-slate-900">
-                  {timer.name}
-                </h3>
+                <div className="flex flex-row justify-between align-center">
+                  <h3 className="truncate text-lg font-medium text-slate-900">
+                    {timer.name}
+                  </h3>
+                  <div
+                    className={cn(
+                      "h-2.5 w-2.5 rounded-full ",
+                      timer.status === "running"
+                        ? "bg-green-600 animate-flash-step"
+                        : "bg-red-600"
+                    )}
+                  />
+                </div>
 
                 <div className="text-sm text-slate-500">
-                  Ends
+                  {new Date(timer.target_datetime) < new Date()
+                    ? "Expired at"
+                    : "Ends"}{" "}
                   <br />
                   {new Date(timer.target_datetime).toLocaleString()}
                 </div>
 
-                <div className="pt-2">
-                  <span className="inline-flex rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-700">
-                    {timer.status}
-                  </span>
-                </div>
+                <div className="pt-2"></div>
                 <div className="flex flex-row justify-between">
                   <EditTimerDialog
                     timerId={timer.id.toString()}
@@ -114,6 +170,24 @@ const TimerSettingsView = ({ ownerUserId }: TimerSettingsViewProps) => {
                       <EditIcon className="h-4 w-4" />
                     </Button>
                   </EditTimerDialog>
+                  <Button
+                    size="sm"
+                    onClick={() => handleStartStop(timer.id, timer.status)}
+                    className="h-8 w-8 rounded-lg text-slate-600 hover:bg-slate-100 hover:text-slate-900 cursor-pointer bg-white"
+                    disabled={new Date(timer.target_datetime) < new Date()}
+                  >
+                    {new Date(timer.target_datetime) > new Date() ? (
+                      // NOT expired - show start/stop
+                      timer.status === "running" ? (
+                        <StopCircle size={16} />
+                      ) : (
+                        <PlayCircle size={16} />
+                      )
+                    ) : (
+                      // Expired - show disabled icon
+                      <TimerOff size={16} />
+                    )}
+                  </Button>
                   <DeleteTimerDialog
                     timerId={timer.id.toString()}
                     onTimerCreated={fetchTimers}
