@@ -12,7 +12,7 @@ export default function Home() {
       <main className="min-h-screen bg-linear-to-b from-neutral-50 to-neutral-100">
         <div className="flex min-h-[calc(100vh-73px)] items-center justify-center px-6">
           <div className="text-center max-w-4xl space-y-8">
-            <h1 className="text-6xl md:text-7xl font-semibold tracking-tight text-neutral-950">
+            <h1 className="text-6xl md:text-7xl font-semibold tracking-tight text-neutral-950 mt-10">
               YourTimer
             </h1>
 
@@ -24,7 +24,7 @@ export default function Home() {
             </p>
 
             {/* Live Demo Timer */}
-            <div className="py-8">
+            <div className="py-8 flex justify-center">
               <TimerDisplayView
                 ownerUserId={process.env.NEXT_PUBLIC_OWNERID!}
                 compact={true}
