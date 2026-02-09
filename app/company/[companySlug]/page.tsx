@@ -11,26 +11,26 @@ export async function generateMetadata({
   params: Promise<{ companySlug: string }>;
 }) {
   const resolvedParams = await params;
-  
+
   // Fetch company data from your API
   const response = await fetch(
     `${process.env.NEXT_PUBLIC_API_URL}/api/companies/by_slug/${resolvedParams.companySlug}`,
-    { cache: 'no-store' }
+    { cache: "no-store" }
   );
-  
+
   if (!response.ok) {
-    return { 
+    return {
       title: "Timer not found | YourTimer.io",
-      description: "Create countdown timers for your business"
+      description: "Create countdown timers for your business",
     };
   }
 
   const company = await response.json();
 
   if (!company) {
-    return { 
+    return {
       title: "YourTimer.io",
-      description: "Create countdown timers for your business"
+      description: "Create countdown timers for your business",
     };
   }
 
@@ -48,20 +48,15 @@ export async function generateMetadata({
 const CompanyPage = async ({ params }: { params: Promise<IParams> }) => {
   const resolvedParams = await params;
 
-
-
   const companyResponse = await fetch(
     `${process.env.NEXT_PUBLIC_API_URL}/api/companies/by_slug/${resolvedParams.companySlug}`
   );
 
   if (!companyResponse.ok) {
-       notFound();
-      }
-
-    
+    notFound();
+  }
 
   const companyData = await companyResponse.json();
-
 
   const ownerUserId = companyData[0]?.owner_user_id;
 
@@ -69,8 +64,14 @@ const CompanyPage = async ({ params }: { params: Promise<IParams> }) => {
     notFound();
   }
 
-
-  return <TimerDisplayView ownerUserId={ownerUserId} className="bg-black text-white"/>;
+  return (
+    <div className="bg-black min-h-screen">
+      <TimerDisplayView
+        ownerUserId={ownerUserId}
+        className="bg-black text-white"
+      />
+    </div>
+  );
 };
 
 export default CompanyPage;

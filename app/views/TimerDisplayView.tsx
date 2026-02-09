@@ -115,8 +115,8 @@ const TimerDisplayView = ({
   return (
     <div
       className={cn(
-        "flex flex-col items-center",
-        compact ? "sm:p-20 p-10 sm:max-w-5xl max-w-sm" : "min-h-screen min-w-full pt-60", // Conditional styling
+        "flex flex-col items-center bg-black ",
+        compact ? "sm:max-w-5xl max-w-sm sm:p-20 p-10 " : "min-h-screen min-w-full pt-60", // Conditional styling
         className
       )}
     >
@@ -129,16 +129,16 @@ const TimerDisplayView = ({
         </Link>
       )}
 
-      <h1 className={cn("pb-12", compact ? "sm:text-2xl text-lg" : "text-3xl")}>
+      <h1 className={cn("pb-12 xl:text-3xl lg:text-2xl text-lg")}>
         {timer?.name}
       </h1>
       <div className="flex sm:gap-8 gap-4 items-center">
         {/* Days */}
         {days > 0 && (
-          <div className={cn("flex flex-col items-center mr-10", compact && "hidden")}>
+          <div className={cn("flex flex-col items-center sm:mr-10 mr-6", compact && "hidden")}>
             <span
               className={cn(
-                " font-mono font-bold transition-colors duration-300 text-[180px]",
+                " font-mono font-bold transition-colors duration-300 xl:text-[180px] lg:text-9xl md:text-7xl sm:text-5xl text-lg",
                 timeRemaining === 0 && "text-red-600 animate-pulse",
                 timeRemaining < 3600 && timeRemaining > 0 && "text-orange-600"
               )}
@@ -155,8 +155,8 @@ const TimerDisplayView = ({
         <div className="flex flex-col items-center">
           <span
             className={cn(
-              "font-mono font-bold transition-colors duration-300",
-              compact ? "lg:text-9xl md:text-7xl sm:text-5xl text-lg" : "text-[180px]",
+              "font-mono font-bold transition-colors duration-300 xl:text-[180px] lg:text-9xl md:text-7xl sm:text-5xl text-lg",
+
               timeRemaining === 0 && "text-red-600 animate-pulse",
               timeRemaining < 3600 && timeRemaining > 0 && "text-orange-600"
             )}
@@ -169,14 +169,14 @@ const TimerDisplayView = ({
         </div>
 
         {/* Separator */}
-        <span className={cn(" font-mono font-bold", compact ? "lg:text-9xl md:text-7xl sm:text-5xl text-lg" : "text-[180px]", )}>:</span>
+        <span className={cn(" font-mono font-bold xl:text-[180px] lg:text-9xl md:text-7xl sm:text-5xl text-lg")}>:</span>
 
         {/* Minutes */}
         <div className="flex flex-col items-center">
           <span
             className={cn(
-              "font-mono font-bold transition-colors duration-300",
-              compact ? "lg:text-9xl md:text-7xl sm:text-5xl text-lg" : "text-[180px]", 
+              "font-mono font-bold transition-colors duration-300 xl:text-[180px] lg:text-9xl md:text-7xl sm:text-5xl text-lg",
+      
               timeRemaining === 0 && "text-red-600 animate-pulse",
               timeRemaining < 3600 && timeRemaining > 0 && "text-orange-600"
             )}
@@ -189,14 +189,13 @@ const TimerDisplayView = ({
         </div>
 
         {/* Separator */}
-        <span className={cn("font-mono font-bold", compact ? "lg:text-9xl md:text-7xl sm:text-5xl text-lg" : "text-[180px]", )}>:</span>
+        <span className={cn("font-mono font-bold xl:text-[180px] lg:text-9xl md:text-7xl sm:text-5xl text-lg", )}>:</span>
 
         {/* Seconds */}
         <div className="flex flex-col items-center">
           <span
             className={cn(
-              "font-mono font-bold transition-colors duration-300",
-              compact ? "lg:text-9xl md:text-7xl sm:text-5xl text-lg" : "text-[180px]", 
+              "font-mono font-bold transition-colors duration-300 xl:text-[180px] lg:text-9xl md:text-7xl sm:text-5xl text-lg",
               timeRemaining === 0 && "text-red-600 animate-pulse",
               timeRemaining < 3600 && timeRemaining > 0 && "text-orange-600"
             )}

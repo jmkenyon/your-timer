@@ -9,8 +9,8 @@ export default function Home() {
   return (
     <>
       <Navbar />
-      <main className="min-h-screen bg-linear-to-b from-neutral-50 to-neutral-100">
-        <div className="flex min-h-[calc(100vh-73px)] items-center justify-center px-6">
+      <div className="min-h-screen bg-linear-to-b from-neutral-50 to-neutral-100 pb-20">
+        <div className="flex justify-center px-6">
           <div className="text-center max-w-4xl space-y-8">
             <h1 className="text-6xl md:text-7xl font-semibold tracking-tight text-neutral-950 mt-10">
               YourTimer
@@ -18,9 +18,9 @@ export default function Home() {
 
             <p className="text-lg md:text-xl text-neutral-600 leading-relaxed">
               Create a timer and get a custom link like{" "}
-              <span className="font-medium text-neutral-900">
-                test-company.yourtimer.io
-              </span>
+              <Link href={"https://test-company.yourtimer.io"} className="font-medium hover:text-orange-600 text-black">
+                test-company.YourTimer.io
+              </Link>
             </p>
 
             {/* Live Demo Timer */}
@@ -40,13 +40,14 @@ export default function Home() {
               >
                 <Link href="/sign-up">Get started</Link>
               </Button>
+              
               <p className="text-sm text-neutral-500 mt-2">
                 Free to start · No credit card required
               </p>
             </div>
           </div>
         </div>
-      </main>
+      </div>
     </>
   );
 }
