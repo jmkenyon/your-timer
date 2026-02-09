@@ -16,12 +16,12 @@ export default function Home() {
               YourTimer
             </h1>
 
-            <div className="text-lg md:text-xl text-neutral-600 leading-relaxed">
-              <p>Create a timer and get a custom link like{" "}</p>
-              <Link href={"https://test-company.yourtimer.io"} className="font-medium hover:text-orange-600 text-black">
+            <p className="text-lg md:text-xl text-neutral-600 leading-relaxed">
+              Create a timer and get a custom link like{" "}
+              <Link href={"https://test-company.yourtimer.io"} className="font-medium hover:text-orange-600 text-black whitespace-nowrap ">
                 test-company.yourtimer.io
               </Link>
-            </div>
+            </p>
 
 
             {/* Live Demo Timer */}
