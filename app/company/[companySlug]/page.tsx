@@ -1,53 +1,76 @@
-"use client";
-
-import Navbar from "@/app/components/Navbar";
 import TimerDisplayView from "@/app/views/TimerDisplayView";
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
+import { notFound } from "next/navigation";
 
-
-
-export default function Home() {
-  return (
-    <>
-      <Navbar />
-      <main className="min-h-screen bg-linear-to-b from-neutral-50 to-neutral-100">
-        <div className="flex min-h-[calc(100vh-73px)] items-center justify-center px-6">
-          <div className="text-center max-w-4xl space-y-8">
-            <h1 className="text-6xl md:text-7xl font-semibold tracking-tight text-neutral-950">
-              YourTimer
-            </h1>
-
-            <p className="text-lg md:text-xl text-neutral-600 leading-relaxed">
-              Create a timer and get a custom link like{" "}
-              <span className="font-medium text-neutral-900">
-                yourcompany.yourtimer.io
-              </span>
-            </p>
-
-            {/* Live Demo Timer */}
-            <div className="py-8">
-              <TimerDisplayView
-                ownerUserId="FBnJ1pC7t0kNR2LIjwIN1v1wKjRnWUqR" 
-                className="bg-neutral-900 text-white rounded-2xl p-8"
-              />
-            </div>
-
-            <div className="pt-2">
-              <Button
-                asChild
-                size="lg"
-                className="bg-orange-600 hover:bg-orange-500 text-white text-base md:text-lg px-10 py-6 rounded-xl shadow-sm hover:shadow-md transition-all"
-              >
-                <Link href="/sign-up">Get started</Link>
-              </Button>
-              <p className="text-sm text-neutral-500 mt-2">
-                Free to start · No credit card required
-              </p>
-            </div>
-          </div>
-        </div>
-      </main>
-    </>
-  );
+interface IParams {
+  companySlug: string;
 }
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ companySlug: string }>;
+}) {
+  const resolvedParams = await params;
+  
+  // Fetch company data from your API
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/api/companies/by_slug/${resolvedParams.companySlug}`,
+    { cache: 'no-store' }
+  );
+  
+  if (!response.ok) {
+    return { 
+      title: "Timer not found | YourTimer.io",
+      description: "Create countdown timers for your business"
+    };
+  }
+
+  const company = await response.json();
+
+  if (!company) {
+    return { 
+      title: "YourTimer.io",
+      description: "Create countdown timers for your business"
+    };
+  }
+
+  return {
+    title: `${company[0].name} - Countdown Timer | YourTimer.io`,
+    description: `Live countdown timer for ${company[0].name}.`,
+    openGraph: {
+      title: `${company[0].name} Timer | YourTimer.io`,
+      description: `Live countdown timer for ${company[0].name}`,
+      type: "website",
+    },
+  };
+}
+
+const CompanyPage = async ({ params }: { params: Promise<IParams> }) => {
+  const resolvedParams = await params;
+
+
+
+  const companyResponse = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/api/companies/by_slug/${resolvedParams.companySlug}`
+  );
+
+  if (!companyResponse.ok) {
+       notFound();
+      }
+
+    
+
+  const companyData = await companyResponse.json();
+
+
+  const ownerUserId = companyData[0]?.owner_user_id;
+
+  if (!ownerUserId) {
+    notFound();
+  }
+
+
+  return <TimerDisplayView ownerUserId={ownerUserId} className="bg-black text-white"/>;
+};
+
+export default CompanyPage;
