@@ -27,12 +27,19 @@ export async function generateMetadata({
 
   const company = await response.json();
 
+  if (!company) {
+    return { 
+      title: "YourTimer.io",
+      description: "Create countdown timers for your business"
+    };
+  }
+
   return {
-    title: `${company.name} - Countdown Timer | YourTimer.io`,
-    description: `Live countdown timer for ${company.name}.`,
+    title: `${company[0].name} - Countdown Timer | YourTimer.io`,
+    description: `Live countdown timer for ${company[0].name}.`,
     openGraph: {
-      title: `${company.name} Timer | YourTimer.io`,
-      description: `Live countdown timer for ${company.name}`,
+      title: `${company[0].name} Timer | YourTimer.io`,
+      description: `Live countdown timer for ${company[0].name}`,
       type: "website",
     },
   };
