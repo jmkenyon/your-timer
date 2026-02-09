@@ -96,6 +96,8 @@ const TimerSettingsView = ({ ownerUserId }: TimerSettingsViewProps) => {
     getInfo();
   }, [ownerUserId]);
 
+  
+
   const fetchTimers = useCallback(async () => {
     if (!companyId) return;
     const timerResponse = await fetch(

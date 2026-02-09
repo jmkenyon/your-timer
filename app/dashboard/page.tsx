@@ -11,7 +11,7 @@ const DashboardPage = async () => {
   if (!session) {
     redirect("/login");
   }
-  return <div>page</div>;
+  redirect("/dashboard/timer-settings");
 };
 
 export default DashboardPage;
