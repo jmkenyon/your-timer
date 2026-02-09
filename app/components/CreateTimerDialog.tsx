@@ -37,7 +37,7 @@ const CreateTimerDialog = ({ companyId, onTimerCreated }: CreateTimerDialogProps
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [open, setOpen] = useState<boolean>(false);
 
-  const { register, handleSubmit, control } = useForm<FieldValues>({
+  const { register, handleSubmit, control, reset } = useForm<FieldValues>({
     defaultValues: {
       name: "",
       companyId: "",
@@ -81,6 +81,7 @@ const CreateTimerDialog = ({ companyId, onTimerCreated }: CreateTimerDialogProps
       }
 
       toast.success("Timer created successfully!");
+      reset()
       onTimerCreated()
       setOpen(false)
      
@@ -108,7 +109,7 @@ const CreateTimerDialog = ({ companyId, onTimerCreated }: CreateTimerDialogProps
               <Input
                 id="name-1"
                 {...register("name")}
-                defaultValue="Product Launch"
+               
               />
             </Field>
             <Field>

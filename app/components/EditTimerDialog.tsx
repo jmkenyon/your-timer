@@ -44,6 +44,7 @@ const EditTimerDialog = ({
   const [timer, setTimer] = useState<Timer | null>(null);
 
   useEffect(() => {
+    if (!companyId || !timerId) return;
     const fetchTimer = async () => {
       try {
         const timerCompanyResponse = await fetch(
@@ -125,8 +126,7 @@ const EditTimerDialog = ({
       );
 
       if (!timerResponse.ok) {
-        const errorData = await timerResponse.json();
-        console.log("Error data:", errorData);
+       
         toast.error("Failed to update timer.");
         return;
       }
@@ -146,8 +146,8 @@ const EditTimerDialog = ({
       <DialogContent className="sm:max-w-sm">
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           <DialogHeader>
-            <DialogTitle>Create Timer</DialogTitle>
-            <DialogDescription>Set up your countdown</DialogDescription>
+            <DialogTitle>Edit Timer</DialogTitle>
+            <DialogDescription>Update your countdown</DialogDescription>
           </DialogHeader>
           <FieldGroup>
             <Field>

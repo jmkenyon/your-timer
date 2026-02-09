@@ -70,9 +70,15 @@ const TimerDisplayView = ({
           toast.error("No timer found for the company.");
           return;
         }
-        const activeTimer = timerData.filter((timer: Timer) => timer.status === "running")[0];
+        const activeTimer = timerData.filter(
+          (timer: Timer) => timer.status === "running"
+        )[0];
 
-       
+      
+        if (!activeTimer) {
+          return;
+        }
+
         setTimer(activeTimer);
         setTimeRemaining(computeSecondsLeft(activeTimer.target_datetime));
       } catch {
@@ -188,7 +194,7 @@ const TimerDisplayView = ({
             {secs.toString().padStart(2, "0")}
           </span>
           <span className="text-sm uppercase tracking-widest text-gray-400">
-           {secs === 1 ? "Second" : "Seconds"}
+            {secs === 1 ? "Second" : "Seconds"}
           </span>
         </div>
       </div>

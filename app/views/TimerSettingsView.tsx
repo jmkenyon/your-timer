@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import toast from "react-hot-toast";
 import CreateTimerDialog from "../components/CreateTimerDialog";
@@ -78,10 +78,14 @@ const TimerSettingsView = ({ ownerUserId }: TimerSettingsViewProps) => {
         const timerResponse = await fetch(
           `${process.env.NEXT_PUBLIC_API_URL}/api/timers/${companyId}`
         );
-        const timerData = await timerResponse.json();
-        if (timerData.length > 0) {
-          setTimers(timerData);
+
+        if (!timerResponse.ok) {
+          toast.error("Failed to fetch timer data.");
+          return;
         }
+        const timerData = await timerResponse.json();
+
+        setTimers(timerData);
 
         // Add this separate useEffect to see the updated state:
       } catch {
@@ -92,7 +96,8 @@ const TimerSettingsView = ({ ownerUserId }: TimerSettingsViewProps) => {
     getInfo();
   }, [ownerUserId]);
 
-  const fetchTimers = async () => {
+  const fetchTimers = useCallback(async () => {
+    if (!companyId) return;
     const timerResponse = await fetch(
       `${process.env.NEXT_PUBLIC_API_URL}/api/timers/${companyId}`
     );
@@ -102,7 +107,7 @@ const TimerSettingsView = ({ ownerUserId }: TimerSettingsViewProps) => {
     }
     const timerData = await timerResponse.json();
     setTimers(timerData);
-  };
+  }, [companyId]);
 
   const sortedTimers = [...timers].sort(
     (a, b) =>
@@ -114,7 +119,13 @@ const TimerSettingsView = ({ ownerUserId }: TimerSettingsViewProps) => {
       <div className="flex flex-row items-center justify-between">
         <CreateTimerDialog companyId={companyId} onTimerCreated={fetchTimers} />
         <Button asChild>
-        <Link href={generateTenantURL(companySlug)} target="_blank" rel="noopener noreferrer" >View Public Timer</Link>
+          <Link
+            href={generateTenantURL(companySlug)}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            View Public Timer
+          </Link>
         </Button>
       </div>
       <h2 className="mb-6 text-xl font-semibold text-slate-900 mt-10">

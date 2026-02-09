@@ -71,7 +71,7 @@ export function DatePickerTime({ value, onChange }: DatePickerTimeProps) {
             <Button
               variant="outline"
               id="date-picker-optional"
-              className="w-32 justify-between font-normal"
+              className="min-w-32 justify-between font-normal"
             >
               {date ? format(date, "PPP") : "Select date"}
               <ChevronDownIcon />

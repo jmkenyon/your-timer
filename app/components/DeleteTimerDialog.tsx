@@ -99,38 +99,40 @@ const DeleteTimerDialog = ({
     }
   };
 
-  if (!timer) {
-    return <Loading/>; 
-  }
-
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className="sm:max-w-sm">
-        <DialogHeader>
-          <DialogTitle>Delete Timer</DialogTitle>
-          <DialogDescription>
-            Are you sure you want to delete this timer? This action cannot be
-            undone.
-          </DialogDescription>
-        </DialogHeader>
-        <DialogFooter>
-          <Button
-            variant="outline"
-            onClick={() => setOpen(false)}
-            disabled={isLoading}
-          >
-            Cancel
-          </Button>
-          <Button
-            variant="destructive"
-            onClick={() => handleDelete(timer.id)}
-            disabled={isLoading}
-            className="bg-red-600 hover:bg-red-700 focus:ring-red-500 cursor-pointer"
-          >
-            Delete
-          </Button>
-        </DialogFooter>
+        {!timer ? (
+          <Loading />
+        ) : (
+          <>
+            <DialogHeader>
+              <DialogTitle>Delete Timer</DialogTitle>
+              <DialogDescription>
+                Are you sure you want to delete this timer? This action cannot
+                be undone.
+              </DialogDescription>
+            </DialogHeader>
+            <DialogFooter>
+              <Button
+                variant="outline"
+                onClick={() => setOpen(false)}
+                disabled={isLoading}
+              >
+                Cancel
+              </Button>
+              <Button
+                variant="destructive"
+                onClick={() => handleDelete(timer.id)}
+                disabled={isLoading}
+                className="bg-red-600 hover:bg-red-700 focus:ring-red-500 cursor-pointer"
+              >
+                Delete
+              </Button>
+            </DialogFooter>
+          </>
+        )}
       </DialogContent>
     </Dialog>
   );
