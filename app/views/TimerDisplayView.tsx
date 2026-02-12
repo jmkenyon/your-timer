@@ -115,8 +115,8 @@ const TimerDisplayView = ({
   return (
     <div
       className={cn(
-        "flex flex-col items-center bg-black ",
-        compact ? "sm:max-w-5xl max-w-sm sm:p-20 p-10 " : "min-h-screen min-w-full pt-60", // Conditional styling
+        "flex flex-col items-center",
+        compact ? "sm:max-w-5xl max-w-sm sm:p-20 p-10 bg-black" : "min-h-screen min-w-full pt-60", // Conditional styling
         className
       )}
     >
