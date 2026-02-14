@@ -22,24 +22,19 @@ import { authClient } from "@/lib/auth-client";
 
 const TimerItems = [
   {
-    title: "Timer Display",
-    url: "/dashboard/timer-display",
-    icon: Hourglass,
-  },
-  {
     title: "Timer Settings",
     url: "/dashboard/timer-settings",
     icon: Settings,
   },
 ];
 
-// const accountItems = [
-//   {
-//     title: "Billing",
-//     url: "/dashboard/billing",
-//     icon: CreditCard,
-//   },
-// ];
+const accountItems = [
+  {
+    title: "Billing",
+    url: "/dashboard/billing",
+    icon: CreditCard,
+  },
+];
 
 export const DashboardSidebar = () => {
   const { data: session } = authClient.useSession();
@@ -100,7 +95,7 @@ export const DashboardSidebar = () => {
         </SidebarGroup>
 
         {/* Billing */}
-        {/* <SidebarGroup>
+        <SidebarGroup>
           <SidebarGroupLabel>Account</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
@@ -125,8 +120,8 @@ export const DashboardSidebar = () => {
               ))}
             </SidebarMenu>
           </SidebarGroupContent>
-        </SidebarGroup>*/}
-      </SidebarContent> 
+        </SidebarGroup>
+      </SidebarContent>
 
       <SidebarFooter>
         <SidebarMenu>

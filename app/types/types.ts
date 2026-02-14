@@ -7,4 +7,5 @@ export interface Timer {
     company_id: number;
     started_at: string | null;
     created_at: string;
+    is_public: boolean;
   }

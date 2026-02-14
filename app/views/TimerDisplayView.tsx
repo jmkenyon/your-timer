@@ -4,30 +4,27 @@ import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import TimeBlock from "../components/TimeBlock";
+import { Timer } from "../types/types";
 
 interface TimerDisplayViewProps {
   ownerUserId: string;
   className?: string;
   compact?: boolean;
-}
-
-interface Timer {
-  id: number;
-  name: string;
-  target_datetime: string;
-  status: string;
-  company_id: number;
-  started_at: string | null;
-  created_at: string;
+  showBranding: boolean;
+  companyName?: string;
 }
 
 const TimerDisplayView = ({
   ownerUserId,
   className,
   compact = false,
+  showBranding,
+  companyName,
 }: TimerDisplayViewProps) => {
   const [timer, setTimer] = useState<Timer | null>(null);
   const [timeRemaining, setTimeRemaining] = useState<number>(0);
+  const [noLiveTimers, setNoLiveTimers] = useState<boolean>(false);
 
   const computeSecondsLeft = (target: string) => {
     const now = new Date();
@@ -73,17 +70,18 @@ const TimerDisplayView = ({
           return;
         }
         const activeTimer = timerData.filter(
-          (timer: Timer) => timer.status === "running"
-        )[0];
+          (timer: Timer) => timer.status === "running" && timer.is_public
+        );
 
-        if (!activeTimer) {
+        if (activeTimer === 0) {
           return;
         }
+        const selected = activeTimer[0];
 
-        setTimer(activeTimer);
-        setTimeRemaining(computeSecondsLeft(activeTimer.target_datetime));
+        setTimer(selected);
+        setTimeRemaining(computeSecondsLeft(selected.target_datetime));
       } catch {
-        toast.error("Failed to fetch timer data.");
+        setNoLiveTimers(true);
       }
     };
     fetchTimer();
@@ -104,10 +102,18 @@ const TimerDisplayView = ({
   const mins = Math.floor((timeRemaining % 3600) / 60);
   const secs = Math.floor(timeRemaining % 60);
 
-  if (!timer) {
+  if (noLiveTimers || !timer) {
     return (
-      <div className="flex min-h-screen items-center justify-center">
-        No timer found. Please create a timer in the settings page.
+      <div className="flex min-h-screen flex-col items-center justify-center text-center px-6 bg-black">
+        {companyName && (
+          <h1 className="text-3xl font-semibold text-white mb-6">
+            {companyName}
+          </h1>
+        )}
+
+        <p className="text-slate-400 text-sm tracking-wide uppercase">
+          No active countdown
+        </p>
       </div>
     );
   }
@@ -116,96 +122,55 @@ const TimerDisplayView = ({
     <div
       className={cn(
         "flex flex-col items-center",
-        compact ? "sm:max-w-5xl max-w-sm sm:p-20 p-10 bg-black" : "min-h-screen min-w-full pt-60", // Conditional styling
+        compact
+          ? "sm:max-w-5xl max-w-sm sm:p-20 p-10 bg-black"
+          : "min-h-screen min-w-full pt-60", // Conditional styling
         className
       )}
     >
-      {!compact && ( // Only show link on full page
-        <Link
-          href={process.env.NEXT_PUBLIC_URL || "https://yourtimer.io"}
-          className="absolute top-5 left-5 text-white"
-        >
-          YourTimer.io
-        </Link>
-      )}
+      {showBranding &&
+        !compact && ( // Only show link on full page
+          <Link
+            href={process.env.NEXT_PUBLIC_URL || "https://yourtimer.io"}
+            className="absolute top-5 left-5 text-white"
+          >
+            YourTimer.io
+          </Link>
+        )}
 
       <h1 className={cn("pb-12 xl:text-3xl lg:text-2xl text-xl")}>
         {timer?.name}
       </h1>
-      <div className="flex sm:gap-8 gap-4 items-center">
+      <div className="flex justify-center gap-8 sm:gap-12 md:gap-20">
         {/* Days */}
-        {days > 0 && (
-          <div className={cn("flex flex-col items-center sm:mr-10 mr-6", compact && "hidden")}>
-            <span
-              className={cn(
-                " font-mono font-bold transition-colors duration-300 xl:text-[180px] lg:text-9xl md:text-7xl sm:text-5xl text-xl",
-                timeRemaining === 0 && "text-red-600 animate-pulse",
-                timeRemaining < 3600 && timeRemaining > 0 && "text-orange-600"
-              )}
-            >
-              {days.toString().padStart(2, "0")}
-            </span>
-            <span className="text-sm uppercase tracking-widest text-gray-400">
-              {days === 1 ? "Day" : "Days"}
-            </span>
-          </div>
+        {days > 0 && !compact && (
+          <TimeBlock
+            value={days}
+            label={days === 1 ? "Day" : "Days"}
+            timeRemaining={timeRemaining}
+          />
         )}
 
         {/* Hours */}
-        <div className="flex flex-col items-center">
-          <span
-            className={cn(
-              "font-mono font-bold transition-colors duration-300 xl:text-[180px] lg:text-9xl md:text-7xl sm:text-5xl text-3xl",
-
-              timeRemaining === 0 && "text-red-600 animate-pulse",
-              timeRemaining < 3600 && timeRemaining > 0 && "text-orange-600"
-            )}
-          >
-            {hrs.toString().padStart(2, "0")}
-          </span>
-          <span className="text-sm uppercase tracking-widest text-gray-400">
-            {hrs === 1 ? "Hour" : "Hours"}
-          </span>
-        </div>
-
-        {/* Separator */}
-        <span className={cn(" font-mono font-bold xl:text-[180px] lg:text-9xl md:text-7xl sm:text-5xl text-3xl")}>:</span>
+        <TimeBlock
+          value={hrs}
+          label={hrs === 1 ? "Hour" : "Hours"}
+          timeRemaining={timeRemaining}
+        />
 
         {/* Minutes */}
-        <div className="flex flex-col items-center">
-          <span
-            className={cn(
-              "font-mono font-bold transition-colors duration-300 xl:text-[180px] lg:text-9xl md:text-7xl sm:text-5xl text-3xl",
-      
-              timeRemaining === 0 && "text-red-600 animate-pulse",
-              timeRemaining < 3600 && timeRemaining > 0 && "text-orange-600"
-            )}
-          >
-            {mins.toString().padStart(2, "0")}
-          </span>
-          <span className="text-sm uppercase tracking-widest text-gray-400">
-            {mins === 1 ? "Minute" : "Minutes"}
-          </span>
-        </div>
-
-        {/* Separator */}
-        <span className={cn("font-mono font-bold xl:text-[180px] lg:text-9xl md:text-7xl sm:text-5xl text-3xl", )}>:</span>
+        <TimeBlock
+          value={mins}
+          label={mins === 1 ? "Minute" : "Minutes"}
+          timeRemaining={timeRemaining}
+        />
 
         {/* Seconds */}
-        <div className="flex flex-col items-center">
-          <span
-            className={cn(
-              "font-mono font-bold transition-colors duration-300 xl:text-[180px] lg:text-9xl md:text-7xl sm:text-5xl text-3xl",
-              timeRemaining === 0 && "text-red-600 animate-pulse",
-              timeRemaining < 3600 && timeRemaining > 0 && "text-orange-600"
-            )}
-          >
-            {secs.toString().padStart(2, "0")}
-          </span>
-          <span className="text-sm uppercase tracking-widest text-gray-400">
-            {secs === 1 ? "Second" : "Seconds"}
-          </span>
-        </div>
+        <TimeBlock
+          value={secs}
+          label={secs === 1 ? "Second" : "Seconds"}
+          timeRemaining={timeRemaining}
+        />
       </div>
     </div>
   );

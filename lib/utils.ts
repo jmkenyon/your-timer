@@ -29,3 +29,5 @@ export function generateTenantURL(companySlug: string) {
 
   return `${protocol}://${companySlug}.${domain}`;
 }
+
+

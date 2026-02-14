@@ -30,9 +30,10 @@ import toast from "react-hot-toast";
 interface CreateTimerDialogProps {
   companyId: string;
   onTimerCreated: () => void;
+  disabled: boolean
 }
 
-const CreateTimerDialog = ({ companyId, onTimerCreated }: CreateTimerDialogProps) => {
+const CreateTimerDialog = ({ companyId, onTimerCreated,disabled }: CreateTimerDialogProps) => {
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [open, setOpen] = useState<boolean>(false);
@@ -95,7 +96,7 @@ const CreateTimerDialog = ({ companyId, onTimerCreated }: CreateTimerDialogProps
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline" className="max-w-40 cursor-pointer">Create Timer</Button>
+        <Button variant="outline" className="max-w-40 cursor-pointer" disabled={disabled}>Create Timer</Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-sm">
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
@@ -131,7 +132,7 @@ const CreateTimerDialog = ({ companyId, onTimerCreated }: CreateTimerDialogProps
             <DialogClose asChild>
               <Button variant="outline">Cancel</Button>
             </DialogClose>
-            <Button type="submit" disabled={isLoading}>
+            <Button type="submit"  className="cursor-pointer" disabled={isLoading}>
               Create Timer
             </Button>
           </DialogFooter>
