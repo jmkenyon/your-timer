@@ -1,9 +1,46 @@
-import React from 'react'
+import BillingPanel from "@/app/views/BillingView";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
+import { redirect } from "next/navigation";
 
-const page = () => {
+
+const page = async () => {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
+  if (!session) {
+    redirect("/login");
+  }
+
+  const userId = session.user.id;
+  const userEmail = session.user.email;
+
+  const companyResponse = await fetch(
+    `${process.env.API_URL}/api/companies/by_ownerid/${userId}`,
+    { cache: "no-store" }
+  );
+
+  if (!companyResponse.ok) {
+    throw new Error("Failed to fetch company data");
+  }
+
+  const companyData = await companyResponse.json();
+
+  if (!companyData || companyData.length === 0) {
+    throw new Error("Company not found");
+  }
+  
+  const company = companyData[0];
+
   return (
-    <div>page</div>
-  )
-}
+    <BillingPanel
+      userId={userId}
+      userEmail={userEmail}
+      currentPlan={company.plan}
+      trialEndsAt={company.trial_ends_at}
+    />
+  );
+};
 
-export default page
+export default page;

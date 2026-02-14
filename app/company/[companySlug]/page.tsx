@@ -34,12 +34,14 @@ export async function generateMetadata({
     };
   }
 
+
+
   return {
-    title: `${company[0].name} - Countdown Timer | YourTimer.io`,
-    description: `Live countdown timer for ${company[0].name}.`,
+    title: `${company.name} - Countdown Timer | YourTimer.io`,
+    description: `Live countdown timer for ${company.name}.`,
     openGraph: {
-      title: `${company[0].name} Timer | YourTimer.io`,
-      description: `Live countdown timer for ${company[0].name}`,
+      title: `${company.name} Timer | YourTimer.io`,
+      description: `Live countdown timer for ${company.name}`,
       type: "website",
     },
   };
@@ -58,7 +60,13 @@ const CompanyPage = async ({ params }: { params: Promise<IParams> }) => {
 
   const companyData = await companyResponse.json();
 
-  const ownerUserId = companyData[0]?.owner_user_id;
+  if (!companyData) {
+    notFound();
+  }
+
+  const ownerUserId = companyData.owner_user_id;
+
+  const showBranding = companyData.show_branding;
 
   if (!ownerUserId) {
     notFound();
@@ -67,8 +75,10 @@ const CompanyPage = async ({ params }: { params: Promise<IParams> }) => {
   return (
     <div className="bg-black min-h-screen">
       <TimerDisplayView
+        companyName={companyData.name}
         ownerUserId={ownerUserId}
         className="bg-black text-white"
+        showBranding={showBranding}
       />
     </div>
   );
