@@ -17,8 +17,7 @@ const page = async () => {
   const userEmail = session.user.email;
 
   const companyResponse = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/api/companies/by_ownerid/${userId}`,
-    { cache: "no-store" }
+    `${process.env.NEXT_PUBLIC_API_URL}/api/companies/by_ownerid/${userId}`
   );
 
   if (!companyResponse.ok) {

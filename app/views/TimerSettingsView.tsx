@@ -87,7 +87,9 @@ const TimerSettingsView = ({ ownerUserId }: TimerSettingsViewProps) => {
           toast.error("Failed to fetch company data.");
           return;
         }
+        console.log(companyResponse)
         const companyData = await companyResponse.json();
+        console.log(companyData)
         if (companyData.length === 0) {
           toast.error("No company found for the user.");
           return;
