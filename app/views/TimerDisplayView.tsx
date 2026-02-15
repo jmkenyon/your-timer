@@ -11,7 +11,7 @@ interface TimerDisplayViewProps {
   ownerUserId: string;
   className?: string;
   compact?: boolean;
-  showBranding: boolean;
+  showBranding?: boolean;
   companyName?: string;
 }
 

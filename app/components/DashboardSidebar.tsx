@@ -1,6 +1,6 @@
 "use client";
 
-import { Hourglass, LogOut, Settings, CreditCard } from "lucide-react";
+import {  LogOut, Settings, CreditCard } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 
