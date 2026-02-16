@@ -51,8 +51,8 @@ const plans = [
     ],
     cta: "Upgrade to Pro",
 
-    priceIdMonthly: "price_1T0Q6DCfB7JjfnVSSah1mysB",
-    priceIdYearly: "price_1T0Q7PCfB7JjfnVS6fjBVeZ3",
+    priceIdMonthly: "price_1T0kpsCeahdfjAC6wq1NPYAi",
+    priceIdYearly: "price_1T0kpuCeahdfjAC62xubUFhu",
   },
   {
     id: "business",
@@ -73,21 +73,12 @@ const plans = [
     ],
     cta: "Upgrade to Business",
     // Replace these with your actual Stripe price IDs
-    priceIdMonthly: "price_1T0Q8oCfB7JjfnVSpxtGxsuQ",
-    priceIdYearly: "price_1T0QB3CfB7JjfnVSehjcDZ1d",
+    priceIdMonthly: "price_1T0kprCeahdfjAC6Xcovsb36",
+    priceIdYearly: "price_1T0kptCeahdfjAC6f6bjvcuL",
   },
 ];
 
-export const STRIPE_PRICE_IDS = {
-  pro: {
-    monthly: "price_1T0Q7PCfB7JjfnVS6fjBVeZ3",
-    yearly: "price_1T0Q7PCfB7JjfnVS6fjBVeZ3",
-  },
-  business: {
-    monthly: "price_1T0Q8oCfB7JjfnVSpxtGxsuQ",
-    yearly: "price_1T0QB3CfB7JjfnVSehjcDZ1d",
-  },
-}
+
 
 const BillingPanel = ({
   userId,
