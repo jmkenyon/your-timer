@@ -44,15 +44,16 @@ const LoginView = () => {
           password: payload.password,
         },
         {
-          onError: () => {
-            // Handle the error
-            toast.error("Please verify your email address.");
-            return
+          onError: (ctx) => {
+            if (ctx.error.status === 403) {
+              toast.error("Please verify your email address.");
+              return;
+            }
           },
         }
       );
 
-      if (error) {
+      if (error && error.status !== 403) {
         toast.error(error.message ?? "Something went wrong. Please try again.");
         return;
       }
