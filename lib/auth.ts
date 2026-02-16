@@ -8,6 +8,7 @@ export const auth = betterAuth({
   }),
   emailAndPassword: {
     enabled: true,
+    requireEmailVerification: true,
   },
   emailVerification: {
     autoSignInAfterVerification: true,
@@ -18,7 +19,7 @@ export const auth = betterAuth({
         token,
       });
     },
-    onEmailVerified: async ({ user }: { user: { email: string } }) => {
+    async afterEmailVerification(user) {
       await sendWelcomeEmail({
         to: user.email,
       });

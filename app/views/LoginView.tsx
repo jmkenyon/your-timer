@@ -41,7 +41,16 @@ const LoginView = () => {
       const { data, error } = await authClient.signIn.email({
         email: payload.email,
         password: payload.password,
-      }, );
+      }, {
+        onError: (ctx) => {
+            // Handle the error
+            if(ctx.error.status === 403) {
+                toast.error("Please verify your email address.");
+            }
+            //you can also show the original error message
+            toast.error(ctx.error.message)
+        }
+    });
 
       if (error) {
         toast.error(error.message ?? "Something went wrong. Please try again.");
