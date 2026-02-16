@@ -98,6 +98,7 @@ var API_BASE =
       "color:" +
       textColor +
       ";" +
+      "position:relative;" +
       positionStyle +
       '">' +
       (isBar
@@ -131,19 +132,46 @@ var API_BASE =
           "</div>" +
           "</div>") +
       (timer.showBranding
-        ? '<div style="margin-top:' +
-          (isBar ? "6px" : "20px") +
-          ';">' +
+        ? '<div id="yourtimer-brand-' +
+          tid +
+          '" style="' +
+          "position:absolute;" +
+          "top:8px;" +
+          "left:12px;" +
+          "font-size:11px;" +
+          "opacity:0.6;" +
+          '">' +
           '<a href="https://yourtimer.io?ref=embed" target="_blank" style="' +
-          "font-size:10px;opacity:0.4;text-decoration:none;color:" +
+          "text-decoration:none;color:" +
           textColor +
           ";" +
-          '">Powered by YourTimer</a>' +
+          '">YourTimer.io</a>' +
           "</div>"
         : "") +
       "</div>";
 
     if (isBar) {
+      var brand = document.getElementById("yourtimer-brand-" + tid);
+
+      function handleBrandResize() {
+        if (!brand) return;
+
+        if (window.innerWidth < 640) {
+          brand.style.position = "static";
+          brand.style.marginTop = "6px";
+          brand.style.textAlign = "center";
+        } else {
+          brand.style.position = "absolute";
+          brand.style.top = "8px";
+          brand.style.left = "12px";
+          brand.style.marginTop = "0";
+          brand.style.textAlign = "left";
+        }
+      }
+
+      handleBrandResize();
+      window.addEventListener("resize", handleBrandResize);
+
       var digits = container.querySelectorAll('[id^="yourtimer-' + tid + '-"]');
       digits.forEach(function (el) {
         if (el.id.match(/days|hours|mins|secs/)) {
