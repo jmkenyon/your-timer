@@ -53,8 +53,8 @@ const plans = [
     ],
     cta: "Upgrade to Pro",
 
-    priceIdMonthly: process.env.STRIPE_PRO_MONTHLY_PRICE_ID,
-    priceIdYearly: process.env.STRIPE_PRO_YEARLY_PRICE_ID,
+    priceIdMonthly: "price_1T0Q6DCfB7JjfnVSSah1mysB",
+    priceIdYearly: "price_1T0Q7PCfB7JjfnVS6fjBVeZ3",
   },
   {
     id: "business",
@@ -75,8 +75,8 @@ const plans = [
     ],
     cta: "Upgrade to Business",
     // Replace these with your actual Stripe price IDs
-    priceIdMonthly: process.env.STRIPE_BUSINESS_MONTHLY_PRICE_ID,
-    priceIdYearly: process.env.STRIPE_BUSINESS_YEARLY_PRICE_ID,
+    priceIdMonthly: "price_1T0Q8oCfB7JjfnVSpxtGxsuQ",
+    priceIdYearly: "price_1T0QB3CfB7JjfnVSehjcDZ1d",
   },
 ];
 
