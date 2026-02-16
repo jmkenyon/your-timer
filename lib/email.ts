@@ -25,7 +25,7 @@ export async function sendEmailVerification({
   token: string;
 }) {
   const verifyUrl =
-  `${process.env.NEXT_PUBLIC_APP_URL}/api/auth/verify-email?token=${token}&callbackURL=/dashboard`;
+  `${process.env.NEXT_PUBLIC_URL}/api/auth/verify-email?token=${token}&callbackURL=/dashboard`;
 
   const { data, error } = await resend.emails.send({
     from: "YourTimer <noreply@yourtimer.io>",
