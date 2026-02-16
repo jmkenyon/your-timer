@@ -41,7 +41,7 @@ const LoginView = () => {
       const { data, error } = await authClient.signIn.email({
         email: payload.email,
         password: payload.password,
-      });
+      }, );
 
       if (error) {
         toast.error(error.message ?? "Something went wrong. Please try again.");
