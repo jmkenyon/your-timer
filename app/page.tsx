@@ -37,17 +37,6 @@ export default function Home() {
               Shopify, WordPress, and any website.
             </p>
 
-            <p className="mt-4 text-nd md:text-lg text-neutral-500 text-center max-w-2xl mx-auto leading-relaxed">
-              Plus, get a shareable timer page like{" "}
-              <Link
-                className="text-orange-500 hover:text-black"
-                href={"https://test-company.yourtimer.io"}
-              >
-                yourstore.yourtimer.io
-              </Link>{" "}
-              — perfect for email campaigns and social.
-            </p>
-
             <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
               <Button
                 asChild
@@ -62,7 +51,7 @@ export default function Home() {
                 size="lg"
                 className="text-lg px-8 py-6 rounded-xl border-neutral-300 w-full sm:w-auto"
               >
-                <Link href="#demo">See it in action</Link>
+                <Link href="/demo.html">See a demo store</Link>
               </Button>
             </div>
 
@@ -70,23 +59,6 @@ export default function Home() {
               Free plan includes 1 timer & 1,000 views/month. No credit card
               required.
             </p>
-
-            {/* Timer Demo */}
-            <div id="demo" className="mt-16 mx-auto">
-              <div className="bg-neutral-950 rounded-2xl shadow-2xl overflow-hidden">
-                <div className="text-center text-neutral-500 text-sm pt-6">
-                  Live demo — this is what your customers see
-                </div>
-                <div className="py-8 flex justify-center">
-                  <TimerDisplayView
-                    ownerUserId={process.env.NEXT_PUBLIC_OWNERID!}
-                    compact={true}
-                    showBranding={false}
-                    className="bg-black text-white rounded-2xl"
-                  />
-                </div>
-              </div>
-            </div>
           </div>
         </section>
 
@@ -116,8 +88,7 @@ export default function Home() {
                   problem: "Support that ghosts you",
                   detail:
                     "Submit a ticket, wait 5 days, get a canned response that doesn't help.",
-                  solution:
-                    "We guarantee a human response within 24 hours.",
+                  solution: "We guarantee a human response within 24 hours.",
                 },
               ].map((item, i) => (
                 <div
@@ -252,7 +223,8 @@ export default function Home() {
               Simple pricing. No surprises.
             </h2>
             <p className="mt-4 text-center text-neutral-600">
-            All paid plans include a 14-day free trial. No credit card required.
+              All paid plans include a 14-day free trial. No credit card
+              required.
             </p>
 
             {/* Billing toggle */}
@@ -404,6 +376,35 @@ export default function Home() {
                     </li>
                   ))}
                 </ul>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Timer Demo */}
+        <section className="max-w-5xl m-auto">
+          <p className="mt-4 text-lg md:text-xl text-neutral-800 text-center max-w-2xl mx-auto leading-relaxed">
+            Plus, get a shareable timer page like{" "}
+            <Link
+              className="text-orange-500 hover:text-black"
+              href={"https://test-company.yourtimer.io"}
+            >
+              yourstore.yourtimer.io
+            </Link>{" "}
+            — perfect for email campaigns and social.
+          </p>
+          <div className="mt-16 mx-auto">
+            <div className="bg-neutral-950 rounded-2xl shadow-2xl overflow-hidden">
+              <div className="text-center text-neutral-500 text-sm pt-6">
+                Live demo — this is what your customers see
+              </div>
+              <div className="py-8 flex justify-center">
+                <TimerDisplayView
+                  ownerUserId={process.env.NEXT_PUBLIC_OWNERID!}
+                  compact={true}
+                  showBranding={false}
+                  className="bg-black text-white rounded-2xl"
+                />
               </div>
             </div>
           </div>
