@@ -8,4 +8,14 @@ export interface Timer {
     started_at: string | null;
     created_at: string;
     is_public: boolean;
+    style: {
+        bgColor: string;
+        textColor: string;
+        accentColor: string;
+        position: "inline" | "top" | "bottom";
+    };
+    on_complete: {
+        action: "message" | "redirect";
+        value: string;
+    };
   }

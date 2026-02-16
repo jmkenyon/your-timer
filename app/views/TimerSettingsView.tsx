@@ -87,9 +87,9 @@ const TimerSettingsView = ({ ownerUserId }: TimerSettingsViewProps) => {
           toast.error("Failed to fetch company data.");
           return;
         }
-        console.log(companyResponse)
+        console.log(companyResponse);
         const companyData = await companyResponse.json();
-        console.log(companyData)
+        console.log(companyData);
         if (companyData.length === 0) {
           toast.error("No company found for the user.");
           return;
@@ -207,19 +207,19 @@ const TimerSettingsView = ({ ownerUserId }: TimerSettingsViewProps) => {
           )}
         </div>
         {timers.filter((timer) => timer.is_public).length > 0 ? (
-        <Button asChild>
-          <Link
-            href={generateTenantURL(companySlug)}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            View Public Timer
-          </Link>
-        </Button>
+          <Button asChild>
+            <Link
+              href={generateTenantURL(companySlug)}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              View Public Timer
+            </Link>
+          </Button>
         ) : (
           <TooltipProvider>
             <Tooltip>
-              <TooltipTrigger>
+              <TooltipTrigger asChild>
                 <Button disabled variant="outline" size="sm">
                   View Public Timer
                 </Button>
@@ -230,8 +230,7 @@ const TimerSettingsView = ({ ownerUserId }: TimerSettingsViewProps) => {
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
-        )
-        }
+        )}
       </div>
       <h2 className="mb-6 text-xl font-semibold text-slate-900 mt-10">
         Your Timers
@@ -268,7 +267,10 @@ const TimerSettingsView = ({ ownerUserId }: TimerSettingsViewProps) => {
                   <br />
                   {new Date(timer.target_datetime).toLocaleString()}
                 </div>
-               <EmbedCode timerId={timer.id} status={timer.status as "running" | "stopped"}/>
+                <EmbedCode
+                  timerId={timer.id}
+                  status={timer.status as "running" | "stopped"}
+                />
 
                 <div className="pt-2" />
                 <div className="flex flex-row justify-between">
@@ -277,21 +279,13 @@ const TimerSettingsView = ({ ownerUserId }: TimerSettingsViewProps) => {
                     onTimerCreated={fetchTimers}
                     companyId={companyId}
                   >
-                    <TooltipProvider>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="h-8 w-8 rounded-lg text-slate-600 hover:bg-slate-100 hover:text-slate-900 cursor-pointer"
-                          >
-                            <EditIcon className="h-4 w-4" />
-                          </Button>
-                        </TooltipTrigger>
-
-                        <TooltipContent>Edit timer</TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8 rounded-lg text-slate-600 hover:bg-slate-100 hover:text-slate-900 cursor-pointer"
+                    >
+                      <EditIcon className="h-4 w-4" />
+                    </Button>
                   </EditTimerDialog>
                   <TooltipProvider>
                     <Tooltip>
@@ -324,6 +318,7 @@ const TimerSettingsView = ({ ownerUserId }: TimerSettingsViewProps) => {
                   <TooltipProvider>
                     <Tooltip>
                       <TooltipTrigger asChild>
+                      <span>
                         <Button
                           size="sm"
                           onClick={() =>
@@ -350,6 +345,7 @@ const TimerSettingsView = ({ ownerUserId }: TimerSettingsViewProps) => {
                             <TimerOff size={16} />
                           )}
                         </Button>
+                        </span>
                       </TooltipTrigger>
 
                       <TooltipContent>
@@ -366,20 +362,13 @@ const TimerSettingsView = ({ ownerUserId }: TimerSettingsViewProps) => {
                     onTimerCreated={fetchTimers}
                     companyId={companyId}
                   >
-                    <TooltipProvider>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="h-8 w-8 rounded-lg text-slate-600 hover:bg-slate-100 hover:text-slate-900 cursor-pointer"
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
-                        </TooltipTrigger>
-                        <TooltipContent>Delete timer</TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8 rounded-lg text-slate-600 hover:bg-slate-100 hover:text-slate-900 cursor-pointer"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
                   </DeleteTimerDialog>
                 </div>
               </div>

@@ -347,7 +347,7 @@ export default function Home() {
                     "50,000 views/month",
                     "All templates + customization",
                     "Remove YourTimer branding",
-                    "Product-level targeting",
+
                     "Actions at zero (redirect, hide, message)",
                     "Shopify app + embed code",
                     "Email support (24hr response)",
