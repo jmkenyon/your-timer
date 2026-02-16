@@ -31,8 +31,8 @@ const plans = [
       "YourTimer branding on embed",
     ],
     cta: "Downgrade to Free",
-    priceIdMonthly: null,
-    priceIdYearly: null,
+    priceIdMonthly: process.env.STRIPE_BUSINESS_MONTHLY_PRICE_ID,
+    priceIdYearly: process.env.STRIPE_BUSINESS_YEARLY_PRICE_ID,
   },
   {
     id: "pro",
