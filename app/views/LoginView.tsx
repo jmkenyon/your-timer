@@ -47,6 +47,7 @@ const LoginView = () => {
           onError: () => {
             // Handle the error
             toast.error("Please verify your email address.");
+            return
           },
         }
       );
