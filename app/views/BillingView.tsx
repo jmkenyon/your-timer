@@ -31,8 +31,6 @@ const plans = [
       "YourTimer branding on embed",
     ],
     cta: "Downgrade to Free",
-    priceIdMonthly: process.env.STRIPE_BUSINESS_MONTHLY_PRICE_ID,
-    priceIdYearly: process.env.STRIPE_BUSINESS_YEARLY_PRICE_ID,
   },
   {
     id: "pro",
@@ -143,8 +141,12 @@ const BillingPanel = ({
           }),
         }
       );
+      console.log(priceId, userId, userEmail)
+    
 
       const data = await res.json();
+
+      console.log("Checkout session response:", data);
 
       if (data.url) {
         window.location.href = data.url;
