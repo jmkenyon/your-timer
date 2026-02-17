@@ -20,12 +20,12 @@ export default function Home() {
         <section className="relative overflow-hidden">
           <div className="absolute inset-0 bg-linear-to-b from-orange-50/50 to-white" />
           <div className="relative max-w-6xl mx-auto px-6 pt-20 pb-16">
-            <div className="flex justify-center mb-8">
+            {/* <div className="flex justify-center mb-8">
               <div className="inline-flex items-center gap-2 bg-orange-50 border border-orange-100 rounded-full px-4 py-1.5 text-sm text-orange-700">
                 <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
                 Used by 100+ stores to boost conversions
               </div>
-            </div>
+            </div> */}
 
             <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight text-neutral-950 text-center max-w-4xl mx-auto leading-[1.1]">
               Countdown timers that{" "}
