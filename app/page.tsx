@@ -35,6 +35,9 @@ export default function Home() {
             <p className="mt-6 text-lg md:text-xl text-neutral-600 text-center max-w-3xl mx-auto leading-relaxed">
               Add urgency to any page in 2 minutes. Embeddable timers for
               Shopify, WordPress, and any website.
+              <span className="block mt-4 text-sm font-semibold text-neutral-900">
+                🎁 Founder Offer: First 100 signups get Pro free for life.
+              </span>
             </p>
 
             <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
